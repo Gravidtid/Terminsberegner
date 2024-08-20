@@ -1,0 +1,65 @@
+<div style="max-width: 600px; margin: 50px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px;">
+    <h1 style="color: #2e5a27; text-align: center;">Terminsberegner</h1>
+    <form id="due-date-calculator">
+        <label style="display: block; margin-bottom: 10px;">
+            <input type="radio" value="last-period" name="method" checked="checked" style="margin-right: 10px;"> Beregn ud fra sidste menstruations første dag
+        </label>
+        <label style="display: block; margin-bottom: 10px;">
+            <input type="radio" value="ovulation-date" name="method" style="margin-right: 10px;"> Beregn ud fra sidste ægløsningsdato
+        </label>
+        <div id="last-period-input" style="margin-bottom: 15px;">
+            <label for="last-period" style="display: block; margin-bottom: 5px; color: #264653;">Dato for sidste menstruations første dag:</label>
+            <input type="date" id="last-period" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+        <div id="ovulation-date-input" style="display: none; margin-bottom: 15px;">
+            <label for="ovulation-date" style="display: block; margin-bottom: 5px; color: #264653;">Dato for sidste ægløsning:</label>
+            <input type="date" id="ovulation-date" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+        <button type="button" style="width: 100%; padding: 15px; background-color: #2e5a27; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;" onclick="beregnTermin()">Beregn terminsdato</button>
+    </form>
+    <div id="resultat" style="margin-top: 20px; text-align: center; font-size: 18px; color: #2e5a27;">Se din forventede terminsdato her</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('input[name="method"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                if (this.value === 'last-period') {
+                    document.getElementById('last-period-input').style.display = 'block';
+                    document.getElementById('ovulation-date-input').style.display = 'none';
+                } else {
+                    document.getElementById('last-period-input').style.display = 'none';
+                    document.getElementById('ovulation-date-input').style.display = 'block';
+                }
+            });
+        });
+    });
+
+    function beregnTermin() {
+        const method = document.querySelector('input[name="method"]:checked').value;
+        let terminDato;
+
+        if (method === 'last-period') {
+            const menstruationDato = document.getElementById('last-period').value;
+            if (!menstruationDato) {
+                alert('Vælg venligst en dato for sidste menstruations første dag.');
+                return;
+            }
+            const menstruationDate = new Date(menstruationDato);
+            terminDato = new Date(menstruationDate);
+            terminDato.setDate(menstruationDate.getDate() + 280);
+        } else {
+            const aeglosningDato = document.getElementById('ovulation-date').value;
+            if (!aeglosningDato) {
+                alert('Vælg venligst en dato for sidste ægløsning.');
+                return;
+            }
+            const aeglosningDate = new Date(aeglosningDato);
+            terminDato = new Date(aeglosningDate);
+            terminDato.setDate(aeglosningDate.getDate() + 266);
+        }
+
+        document.getElementById('resultat').innerHTML = '<p>Din forventede terminsdato er: ' + terminDato.toLocaleDateString('da-DK') + '</p>';
+    }
+</script>
+
